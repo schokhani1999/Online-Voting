@@ -3,27 +3,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class City_Table extends JApplet implements ActionListener {
+public class Constituency_Table extends JApplet implements ActionListener {
 	
-	JLabel lbCity;
-	JTextField txCity;
-	JComboBox<String> cbState;
+	JLabel lbConstituency;
+	JTextField txConstituency;
+	JComboBox<String> cbCity;
 	JButton btnIns;
 	
 	public void init() {
-		lbCity = new JLabel("City");
-		txCity = new JTextField(20);
-		cbState = new JComboBox<String>();
-		cbState.addItem("---- State ----");
+		lbConstituency = new JLabel("Constituency");
+		txConstituency = new JTextField(20);
+		cbCity = new JComboBox<String>();
+		cbCity.addItem("---- City ----");
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "");
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("create database if not exists ElectionDb");
 			stmt.execute("use ElectionDb");
-			ResultSet rs = stmt.executeQuery("select distinct State_Name from StateTb");
+			ResultSet rs = stmt.executeQuery("select distinct City_Name from CityTb");
 			while(rs.next()) {
-				cbState.addItem(rs.getString("State_Name"));
+				cbCity.addItem(rs.getString("City_Name"));
 			}
 			con.close();
 		} catch (ClassNotFoundException | SQLException e) {
@@ -34,12 +34,12 @@ public class City_Table extends JApplet implements ActionListener {
 		
 		setLayout(new FlowLayout());
 		
-		add(cbState);
-		add(lbCity);
-		add(txCity);
+		add(cbCity);
+		add(lbConstituency);
+		add(txConstituency);
 		add(btnIns);
 		
-	//	cbState.addItemListener(this);
+	//	cbCity.addItemListener(this);
 		btnIns.addActionListener(this);
 	}
 
@@ -52,10 +52,11 @@ public class City_Table extends JApplet implements ActionListener {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("create database if not exists ElectionDb");
 			stmt.execute("use ElectionDb");
-			String State=(String)cbState.getSelectedItem();
-			stmt.executeUpdate("create table if not exists " + State + "Tb(City_Name varchar(50))");
-			PreparedStatement pstmt = con.prepareStatement("insert into "+State+"Tb(City_Name) values(?)");
-			pstmt.setString(1, txCity.getText());
+		
+			String City=(String)cbCity.getSelectedItem();
+			stmt.executeUpdate("create table if not exists " + City + "Tb(Constituency_Name varchar(50))");
+			PreparedStatement pstmt = con.prepareStatement("insert into "+City+"Tb(Constituency_Name) values(?)");
+			pstmt.setString(1, txConstituency.getText());
 			pstmt.execute();
 		
 			con.close();
