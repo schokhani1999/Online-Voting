@@ -23,7 +23,7 @@ public class Party_Table extends JApplet implements ActionListener {
 		lblogo.getPreferredSize();
 		lblogo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 20));
 		lbEstbYear = new JLabel("Established Year");
-		lbCoF = new JLabel("Co-Founder");
+		lbCoF = new JLabel("Founder/Co-Founder");
 		lbPres = new JLabel("President");
 		lbtype = new JLabel("Party Type");
 		lbGovtRole = new JLabel("Government Role");

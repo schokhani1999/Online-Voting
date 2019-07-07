@@ -53,6 +53,7 @@ public class City_Table extends JApplet implements ActionListener {
 			stmt.executeUpdate("create database if not exists ElectionDb");
 			stmt.execute("use ElectionDb");
 			String State=(String)cbState.getSelectedItem();
+			stmt.executeUpdate("create table if not exists " +  txCity.getText() + "Tb(Constituency_Name varchar(50))");
 			stmt.executeUpdate("create table if not exists " + State + "Tb(City_Name varchar(50))");
 			PreparedStatement pstmt = con.prepareStatement("insert into "+State+"Tb(City_Name) values(?)");
 			pstmt.setString(1, txCity.getText());

@@ -5,9 +5,9 @@ import java.sql.*;
 
 public class Voter_Table extends JApplet implements ActionListener, ItemListener {
 
-	JLabel lbVID, lbPhoto, lbPh, lbName, lbFName, lbGen, lbDob, lbAdd, lbState, lbCity, lbDate, lbAID;
-	JTextField txVID, txName, txFName, txAdd, txAID, txCity;
-	JComboBox<String> cbD, cbM, cbY, cbState, cbDD, cbMM, cbYY;
+	JLabel lbVID, lbPhoto, lbPh, lbName, lbFName, lbGen, lbDob, lbAdd,lbCity, lbState, lbDate, lbAID,lbCon;
+	JTextField txVID, txName, txFName, txAdd, txAID;
+	JComboBox<String> cbD, cbM, cbY, cbState, cbDD, cbMM, cbYY,cbCity,cbConstituency;
 	JRadioButton rbM, rbF;
 	ButtonGroup grpGen;
 	JButton btnS, btnC, btnR, btnB;
@@ -24,17 +24,17 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 		lbDob = new JLabel("Date of Birth");
 		lbAdd = new JLabel("Address");
 		lbState = new JLabel("State");
-		lbCity = new JLabel("City");
 		lbDate = new JLabel("Date");
 		lbAID = new JLabel("Area ID");
+		lbCity=new JLabel("City");
+		lbCon=new JLabel("Constituency");
 		
 		txVID = new JTextField(20);
 		txName = new JTextField(20);
 		txFName = new JTextField(20);
 		txAdd = new JTextField(20);
 		txAID = new JTextField(20);
-		txCity = new JTextField(20);
-		
+			
 		cbD = new JComboBox<String>();
 		cbD.addItem("---- Day ----");
 		
@@ -47,38 +47,27 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 		cbY.addItem("---- Year ----");
 		for(int i = 1950; i <= 2001; i++)
 			cbY.addItem(i + "");
+		cbConstituency=new JComboBox<String>();
+		cbConstituency.addItem("---- Constituency ----");
+		cbCity = new JComboBox<String>();
+		cbCity.addItem("---- City ----");
 		
 		cbState = new JComboBox<String>();
 		cbState.addItem("---- State ----");
-		cbState.addItem("Andhra Pradesh");
-		cbState.addItem("Arunachal Pradesh");
-		cbState.addItem("Assam");
-		cbState.addItem("Bihar");
-		cbState.addItem("Chhattisgarh");
-		cbState.addItem("Goa");
-		cbState.addItem("Gujrat");
-		cbState.addItem("Haryana");
-		cbState.addItem("Himacal Pradesh");
-		cbState.addItem("Jammu & Kashmir");
-		cbState.addItem("Jharkhand");
-		cbState.addItem("Karnataka");
-		cbState.addItem("Kerala");
-		cbState.addItem("Madhya Pradesh");
-		cbState.addItem("Maharashtra");
-		cbState.addItem("Manipur");
-		cbState.addItem("Meghalaya");
-		cbState.addItem("Mizoram");
-		cbState.addItem("Nagaland");
-		cbState.addItem("Odisha");
-		cbState.addItem("Punjab");
-		cbState.addItem("Rajasthan");
-		cbState.addItem("Sikkim");
-		cbState.addItem("Tamil Nadu");
-		cbState.addItem("Telangana");
-		cbState.addItem("Tripura");
-		cbState.addItem("Uttar Pradesh");
-		cbState.addItem("Uttarakhand");
-		cbState.addItem("West Bengal");	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "");
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate("create database if not exists ElectionDb");
+			stmt.execute("use ElectionDb");
+			ResultSet rs = stmt.executeQuery("select distinct State_Name from StateTb");
+			while(rs.next()) {
+				cbState.addItem(rs.getString("State_Name"));
+			}
+			con.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
 		
 		cbDD = new JComboBox<String>();
 		cbDD.addItem("---- Day ----");
@@ -103,7 +92,7 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 		btnS = new JButton("Submit");
 		btnC = new JButton("Cancel");
 		btnR = new JButton("Refresh");
-		btnB = new JButton("Browse..");
+		btnB = new JButton("Browse");
 		
 		setLayout(new FlowLayout());
 		
@@ -127,7 +116,9 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 		add(lbState);
 		add(cbState);
 		add(lbCity);
-		add(txCity);
+		add(cbCity);
+		add(lbCon);
+		add(cbConstituency);
 		add(lbDate);
 		add(cbDD);
 		add(cbMM);
@@ -147,6 +138,9 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 		cbY.addItemListener(this);
 		cbMM.addItemListener(this);
 		cbYY.addItemListener(this);
+		this.cbState.addItemListener(this);
+		this.cbCity.addItemListener(this);
+		this.cbConstituency.addItemListener(this);
 	}
 	
 	@Override
@@ -178,7 +172,8 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 				pstmt.setDate(6, dob);
 				pstmt.setString(7, txAdd.getText());
 				pstmt.setString(8, cbState.getSelectedItem().toString());
-				pstmt.setString(9, txCity.getText());
+				String City=(String)cbCity.getSelectedItem();
+				pstmt.setString(9, City);
 				dd = Integer.parseInt(cbD.getSelectedItem().toString());
 				mm = Integer.parseInt(cbM.getSelectedItem().toString());;
 				yyyy = Integer.parseInt(cbY.getSelectedItem().toString());;
@@ -204,7 +199,6 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 			txFName.setText("");
 			txAdd.setText("");
 			txAID.setText("");
-			txCity.setText("");
 			
 			lbPh.setIcon(new ImageIcon());
 			
@@ -278,5 +272,59 @@ public class Voter_Table extends JApplet implements ActionListener, ItemListener
 				cbDD.addItem(i + "");
 			}
 		}
+			if(ie.getStateChange()== ItemEvent.DESELECTED)return;
+					
+					
+					if(src==cbState)
+					{
+						if(cbCity.getItemCount()>1)
+						{
+							cbCity.removeAllItems();
+							cbCity.addItem("---- City ----");
+						}
+						if(cbState.getSelectedIndex()==0) return;
+						String State=(String)cbState.getSelectedItem();
+						try {
+							Class.forName("com.mysql.jdbc.Driver");
+							Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "");
+							Statement stmt = con.createStatement();
+							stmt.executeUpdate("create database if not exists ElectionDb");
+							stmt.execute("use ElectionDb");
+							ResultSet rs = stmt.executeQuery("select distinct City_Name from "+ State +"tb");
+							while(rs.next()) {
+								cbCity.addItem(rs.getString("City_Name"));
+							}
+							con.close();
+						} catch (ClassNotFoundException | SQLException e) {
+							e.printStackTrace();
+						}
+					}
+					else
+					{
+						if(cbConstituency.getItemCount()>1)
+						{
+							cbConstituency.removeAllItems();
+							cbConstituency.addItem("---- Constituency ----");
+						}
+								
+						if(cbCity.getSelectedIndex()==0 ) return;
+						
+						String City=(String)cbCity.getSelectedItem();
+						try {
+							Class.forName("com.mysql.jdbc.Driver");
+							Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "");
+							Statement stmt = con.createStatement();
+							stmt.executeUpdate("create database if not exists ElectionDb");
+							stmt.execute("use ElectionDb");
+							ResultSet rs = stmt.executeQuery("select distinct Constituency_Name from "+ City +"tb");
+							while(rs.next()) {
+								cbConstituency.addItem(rs.getString("Constituency_Name"));
+							}
+							con.close();
+						} catch (ClassNotFoundException | SQLException e) {
+							e.printStackTrace();
+						}
+					}
 	}
 }
+

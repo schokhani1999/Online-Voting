@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +14,6 @@ public class Epic_no extends JApplet implements ActionListener
 	JTextField txepic;
 	public void init()
 	{
-		Color c1=new Color(53, 45, 26);
-		setBackground(c1);
 		setLayout(new FlowLayout());
 		
 		lbepic=new JLabel("Enter your epic number");
