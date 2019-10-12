@@ -2,6 +2,7 @@ import java.awt.event.*;
 import java.sql.*;
 import java.awt.*;
 import javax.swing.*;
+import java.util.*;
 
 public class Area_Table extends JApplet implements ActionListener,ItemListener {
 	
