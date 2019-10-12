@@ -3,6 +3,7 @@ import java.sql.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.*;
 
 public class AITC_Table extends JApplet implements ActionListener, ItemListener {
 
