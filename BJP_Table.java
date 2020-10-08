@@ -119,7 +119,6 @@ public class BJP_Table extends JApplet implements ActionListener, ItemListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		// TODO Auto-generated method stub
 		Object src = ae.getSource();
 		
 		if(src == btnS) {
