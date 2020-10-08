@@ -23,6 +23,7 @@ public class State_Table extends JApplet implements ActionListener {
 		btnIns.addActionListener(this);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		// TODO Auto-generated method stub
 		try {
