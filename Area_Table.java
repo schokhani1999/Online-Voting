@@ -73,7 +73,6 @@ public class Area_Table extends JApplet implements ActionListener,ItemListener {
 		this.cbCity.addItemListener(this);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent ae) {
 		// TODO Auto-generated method stub
 		Object src = ae.getSource();
