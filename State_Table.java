@@ -42,7 +42,6 @@ public class State_Table extends JApplet implements ActionListener {
 			con.close();
 			
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
